@@ -173,19 +173,20 @@ app.command("/hb-define", async({command, ack, respond})=> {
 
 app.command("/hb-ship", async ({ack ,respond}) => {
   await ack();
-  try{
-    const res = await axios.get("https://scrapbook.hackclub.com/api/posts");
-    const posts = res.data.filter(p => p.text?.trim());
-    const post = posts[Math.floor(Math.random() * Math.min(posts.length, 100))];
-    const user = post.user?.username ?? "unknown";
-    const text = post.text.slice(0,200);
-    const link = `https://scrapbook.hackclub.com/@${user}`;
+  try {
+      const res = await axios.get("https://api.github.com/orgs/hackclub/repos?per_page=100&sort=updated", {
+        headers: { "User-Agent": "HelpBot" }
+      });
+      const repos = res.data.filter(r => r.description);
+      const repo = repos[Math.floor(Math.random() * repos.length)];
 
-    await respond({text: `🚢 *Random Ship from @${user}*\n${text}\n<${link}|View their scrapbook>`});
-
-  }catch (err) {
-    await respond({text: "❌ Couldn't fetch a ship right now."});
-  }
+      await respond({
+        text: `🚢 *Random Hack Club Project: ${repo.name}*\n${repo.description}\n⭐ ${repo.stargazers_count} stars\n<${repo.html_url}|View on GitHub>`
+      });
+    } catch (err) {
+      console.error("Ship error:", err.message);
+      await respond({ text: "❌ Couldn't fetch a ship right now." });
+    }
 });
 
 (async () => {
