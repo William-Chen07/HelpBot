@@ -2,6 +2,8 @@ HelpBot is a Slack Bot that offers utility commands.
 
 To use the bot just go on any channels in the Hack Club workspace on Slack
 
+Claude was used for code explanantion and debugging.
+
 ```
 Available Commands:
 /hb-ping - Check bot latency
